@@ -1,0 +1,54 @@
+#slideshow {
+	position: relative;
+	height: 500px;
+}
+
+#slideshow img {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	margin: auto;
+	max-height: 100%;
+	max-width: 100%;
+}
+
+a {
+	display: block;
+	margin-top: 20px;
+	text-align: center;
+	font-size: 24px;
+  margin-left: 300px;
+  margin-right: 300px;
+}
+
+a#play-link {
+    background-color: #0077cc;
+    color: #fff;
+    font-size: 24px;
+    font-weight: bold;
+    border-radius: 5px;
+    padding: 10px;
+    text-decoration: none;
+    display: inline-block;
+    transition: background-color 0.3s ease-in-out;
+    display: block;
+}
+      
+
+  
+a#play-link:hover {
+  background-color: #0066b2;
+}
+
+body {
+    background-color: #7FFFD4;
+}
+.playpei {
+  text-align: center;
+  margin-top: 10px;
+}
+  
+
+  
