@@ -1,0 +1,23 @@
+.checked {
+    text-decoration: line-through;
+    color: red;
+}
+
+ul {
+    list-style: none;
+}
+
+.mercadofoto{
+    color: red;
+    height: 70px;
+    width: 70px;
+    background-image: url(https://i.pinimg.com/736x/35/9f/c1/359fc10f1796821c8aabd813f839dadb.jpg://img.olhardigital.com.br/wp-content/uploads/2021/05/supermercado.jpeg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size:cover;
+    margin-bottom: 0vh;
+    margin-top: 0vh;
+    margin-right: 0vh;
+    margin-left: 0vh;
+
+}
