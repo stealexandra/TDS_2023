@@ -1,10 +1,13 @@
 const express = require("express");
 const hbs = require("hbs");
-const routes = require("./routes/index.js");
+const routes = require("./route/index");
 
 const app = express();
 
+app.use(express.urlencoded({ extended: true}));
 app.use(express.json());
+
+app.use(routes);
 
 hbs.registerPartials(`${__dirname}/views`);
 app.set("view engine", "hbs");
@@ -12,7 +15,26 @@ app.set("view options", {
   layout: "layouts/default",
 });
 
-app.use(routes);
+app.use(express.static("public"));
+
+hbs.registerHelper("formataCPF", (data) => {
+  return data
+      .replace(/[^\d]/g, "")
+      .replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+});
+
+hbs.registerHelper("formataData", (data) => {
+  const dataCompleta = new Date(data)
+  const dia = String(dataCompleta.getDay()).padStart(2, "0");
+  const mes = String(dataCompleta.getMonth() + 1).padStart(2, "0");;
+  const ano = dataCompleta.getFullYear();
+  return `${dia}/${mes}/${ano}`;
+});
+
+hbs.registerHelper("formataTelefone", (data) => {
+  return data.replace(/(\d{2})(\d{1})(\d{4})(\d{4})/, "($1) $2 $3-$4");
+});
+
 
 app.listen(8080, (error) => {
   if (error) {

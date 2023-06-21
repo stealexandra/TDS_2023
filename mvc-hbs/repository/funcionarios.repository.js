@@ -2,7 +2,7 @@ const con = require("../mysql-connection");
 
 module.exports = {
   buscaTodos: () => {
-    return con.select().from("funcionarios");
+    return con.select().from("funcionarios").orderByRaw("id desc");
   },
   buscaPorId: (id) => {
     return con.select().from("funcionarios").where("id", "=", id);
@@ -38,4 +38,11 @@ module.exports = {
   inserirDependentes: (parametro) => {
     return con.insert(parametro).into("dependentes");
   },
+  deletarDependentes: (id) => {
+    return con("dependentes").where({ id: id }).del();
+  },
+  atualizarDependentes: (dependentes, id) => {
+    return con("dependentes").update(dependentes).where({ id: id });
+  },
+
 };

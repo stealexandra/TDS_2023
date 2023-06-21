@@ -8,45 +8,35 @@ module.exports = {
       .catch((error) => {
         res.status(500).send(error);
       });
-
     res.render("funcionarios", { data });
   },
-  buscaPorId: (req, res) => {
+  buscaPorId: async (req, res) => {
     const { id } = req.params;
 
-    if (!id) {
-      res.status(404).send({ msg: "Parametro id obrigatorio!" });
-    }
-
-    funcionariosRepository
-      .buscaPorId(id)
-      .then((data) => {
-        res.send(data);
-      })
-      .catch((error) => {
-        res.status(500).send(error);
-      });
+    let data = await funcionariosRepository.buscaPorId(id);
+    data = data[0];
+    res.render("cadastro_funcionarios", { data });
+      
   },
-  inserir: (req, res) => {
-    const funcionario = req.body;
+  inserir: async (req, res) => {
+    var funcionario = req.body;
 
-    if (funcionario.length > 1) {
-      res.send({
-        msg: "Número de registros informado é maior que o permitido!",
-      });
+    funcionario.STATUS = funcionario.STATUS == "on";
+    funcionario.CPF = funcionario.CPF.replaceAll(".", "").replaceAll("-", "");
+
+    if (funcionario.ID == "") {
+      funcionario.ID = null;
+   await funcionariosRepository.inserir(funcionario);
+    } else {
+      const { ID } = funcionario;
+      await funcionariosRepository.atualizar(funcionario, ID);
     }
+
+   res.redirect("funcionarios");
+
 
     funcionariosRepository
       .inserir(funcionario)
-      .then(() => {
-        res.send({
-          msg: "Funcionario inserido, com sucesso!",
-          funcionario,
-        });
-      })
-      .catch((error) => {
-        res.status(500).send(error);
-      });
   },
   deletar: (req, res) => {
     const { id } = req.params;
@@ -76,15 +66,10 @@ module.exports = {
         res.status(500).send(error);
       });
   },
-  buscaTodosDepDoFunc: (req, res) => {
-    funcionariosRepository
-      .buscaTodosDepDoFunc()
-      .then((data) => {
-        res.send(data);
-      })
-      .catch((error) => {
-        res.status(500).send(error);
-      });
+  buscaTodosDepDoFunc: async (req, res) => {
+    const data = await funcionariosRepository
+      .buscaTodosDepDoFunc();
+    res.render("dependentes", { data });
   },
   buscaDepDoFunc: (req, res) => {
     const { id } = req.params;
@@ -96,28 +81,57 @@ module.exports = {
       .catch((error) => {
         res.status(500).send(error);
       });
+
+      res.render("cadastro_dependentes", { data });
   },
   inserirDependentes: async (req, res) => {
-    const dependente = req.body;
+    let dependente = req.body;
+    console.log(dependente);
 
-    const funcionario = await funcionariosRepository
-      .buscaPorId(dependente.funcionario_id)
-      .then((data) => data)
-      .catch((error) => {
-        return res.status(500).send(error);
-      });
-
-    if (funcionario.length <= 0) {
-      return res.status(404).send({ msg: "Funcionario não existe!" });
+    if(dependente.ID == ""){
+      dependente.ID = null;
     }
 
+    await funcionariosRepository.inserirDependentes(dependente);
+
+      res.redirect("dependentes");
+  },
+
+  deletarDependentes: (req, res) => {
+    const { id } = req.params;
+
     funcionariosRepository
-      .inserirDependentes(dependente)
-      .then((data) => {
-        return res.send({ msg: "Dependente registrado com sucesso!" });
+      .deletarDependentes(id)
+      .then(() => {
+        res.send({ msg: "Dependente deletado com sucesso!" });
       })
       .catch((error) => {
-        return res.status(500).send(error);
+        res.status(500).send(error);
+      });
+  },
+
+  atualizarDependentes: (req, res) => {
+    const dependentes = req.body;
+    const { id } = req.params;
+
+    funcionariosRepository
+      .atualizarDependentes(dependentes, id)
+      .then(() => {
+        res.send({
+          msg: "Dependente atualizado com sucesso!",
+          dependentes,
+        });
+      })
+      .catch((error) => {
+        res.status(500).send(error);
       });
   },
 };
+
+function formataData(end_date) {
+  var ed = new Date(end_date);
+   var d = ed.getDay();
+  var m = ed.getMonth() + 1;
+  var y = ed.getFullYear();
+  return "" + y + "-" + (m <= 9 ? "0" + m : m) + "-" + (d <= 9 ? "0" + d : d);
+}
