@@ -97,18 +97,24 @@ module.exports = {
       res.redirect("dependentes");
   },
 
-  deletarDependentes: (req, res) => {
+  deletarDependentes: async (req, res) => {
     const { id } = req.params;
+    console.log(dependente);
 
-    funcionariosRepository
-      .deletarDependentes(id)
-      .then(() => {
-        res.send({ msg: "Dependente deletado com sucesso!" });
-      })
-      .catch((error) => {
-        res.status(500).send(error);
-      });
+    await funcionariosRepository.deletarDependentes(dependente);
+
+      res.redirect("dependentes");
   },
+
+  //   funcionariosRepository
+  //     .deletarDependentes(id)
+  //     .then(() => {
+  //       res.send({ msg: "Dependente deletado com sucesso!" });
+  //     })
+  //     .catch((error) => {
+  //       res.status(500).send(error);
+  //     });
+  // },
 
   atualizarDependentes: (req, res) => {
     const dependentes = req.body;
